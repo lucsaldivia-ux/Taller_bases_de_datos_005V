@@ -1,0 +1,50 @@
+SELECT * FROM EVENTO;
+
+UPDATE EVENTO SET ESTADO = 'CANCELADO' WHERE EVENTO_ID= 1;
+COMMIT;
+/
+--Excepcion personalizada
+DECLARE
+e_evento_cancelado EXCEPTION;
+v_estado EVENTO.estado&type;
+BEGIN
+    SELECT estado INTO v_estado
+    FROM evento
+    WHERE EVENTO_ID= 1 ;
+
+    IF v_estado = 'CANCELADO' THEN
+        RAISE e_evento_cancelado;
+    END IF;
+
+    DBMS_OUTPUT.PUT_LINE('EVENTO DISPONIBLE PARA LA VENTA');
+    
+EXCEPTION
+    WHEN e_evento_cancelado THEN
+    DBMS_OUTPUT.PUT_LINE('NO SE PUEDE VENDER, EL EVENTO ESTA CANCELADO');
+END;
+/
+
+--RAIS APP INIT
+
+BEGIN
+    IF condition THEN
+        RAISE_APPLICATION_ERROR(-20001, 'MENSAJE DE ERROR PERSONALIZADO');
+    END IF;
+END;
+/
+--raise app error
+DECLARE 
+    v_stock LOCALIDAD_EVENTO.STOCK_DISPONIBLE%TYPE;
+BEGIN
+    SELECT STOCK_DISPONIBLE INTO v_stock
+    FROM LOCALIDAD_EVENTO
+    WHERE LOCALIDAD_EVENTO_ID=1;
+
+    IF v_stock <= 0 THEN
+    RAISE_APPLICATION_ERROR(-20001, 'MENSAJE DE ERROR PERSONALIZADO');
+    END IF;
+
+    DBMS_OUTPUT.PUT_LINE('Stock disponible: ' || v_stock);
+    END;
+
+--pragma init error
